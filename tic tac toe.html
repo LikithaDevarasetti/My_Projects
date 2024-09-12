@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background: aqua;
+    }
+
+    #header-text {
+      font-size: 50px;
+      color: darkslategrey;
+      padding: 10px 20px;
+      border-radius: 10px;
+    }
+
+    .main {
+      padding: 40px;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: auto auto auto;
+      background: darkgrey;
+      margin-top: 40px;
+      padding: 1px;
+    }
+
+    .box {
+      background: white;
+      height: 150px;
+      width: 150px;
+      border: 1px solid darkgrey;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 100px;
+      color: darkslategrey;
+      cursor: pointer;
+    }
+
+    #resetBtn {
+      background: indigo;
+      border-radius: 10px;
+      color: white;
+      padding: 10px 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main">
+    <h1 id="header-text">Let's play!!</h1>
+    <button id="resetBtn">Reset</button>
+    <div class="container">
+      <div class="box" id="0"></div>
+      <div class="box" id="1"></div>
+      <div class="box" id="2"></div>
+      <div class="box" id="3"></div>
+      <div class="box" id="4"></div>
+      <div class="box" id="5"></div>
+      <div class="box" id="6"></div>
+      <div class="box" id="7"></div>
+      <div class="box" id="8"></div>
+    </div>
+  </div>
+  <script>
+    const boxes = Array.from(document.getElementsByClassName('box'));
+    const resetBtn = document.getElementById('resetBtn');
+    resetBtn.addEventListener('click', reset);
+    let headerText = document.getElementById('header-text');
+    const areas = [null, null, null, null, null, null, null, null, null];
+    const o_text = "o";
+    const x_text = "x";
+    let currentPlayer = o_text;
+    let winBoxesIds = [];
+
+    function bindClickEvent() {
+      boxes.forEach(box => {
+        box.addEventListener('click', handleBoxClick);
+      })
+    }
+
+    bindClickEvent();
+
+    function handleBoxClick(e) {
+      if(winBoxesIds.length > 0){
+        return
+      }
+      const id = e.target.id;
+      if (!areas[id]) {
+        areas[id] = currentPlayer;
+        e.target.innerHTML = currentPlayer;
+
+        if (hasPlayerWon(currentPlayer)) {
+          headerText.innerHTML = `${currentPlayer} has won!!`;
+          headerText.style.background = 'lightgreen';
+          changeWinBoxesBg();
+          return
+        }
+        currentPlayer = currentPlayer === o_text ? x_text : o_text;
+      }
+
+
+    }
+
+    function hasPlayerWon(cPlayer){
+      if(areas[0] === cPlayer){
+        if(areas[1]===cPlayer && areas[2]===cPlayer){
+          winBoxesIds = [0,1,2];
+          return true;
+        }
+        if(areas[3]===cPlayer && areas[6]===cPlayer){
+          winBoxesIds = [0,3,6];
+          return true;
+        }
+        if(areas[4]===cPlayer && areas[8]===cPlayer){
+          winBoxesIds = [0,4,8];
+          return true;
+        }
+      }
+      if(areas[4] === cPlayer){
+        if(areas[1]===cPlayer && areas[7]===cPlayer){
+          winBoxesIds = [4,1,7];
+          return true;
+        }
+        if(areas[2]===cPlayer && areas[6]===cPlayer){
+          winBoxesIds = [4,2,6];
+          return true;
+        }
+        if(areas[3]===cPlayer && areas[5]===cPlayer){
+          winBoxesIds = [4,3,5];
+          return true;
+        }
+      }
+      if(areas[8] === cPlayer){
+        if(areas[7]===cPlayer && areas[6]===cPlayer){
+          winBoxesIds = [8,7,6];
+          return true;
+        }
+        if(areas[5]===cPlayer && areas[2]===cPlayer){
+          winBoxesIds = [8,5,2];
+          return true;
+        }
+      }
+    }
+
+    function changeWinBoxesBg(){
+      winBoxesIds.forEach(id=>{
+        boxes[id].style.background = 'lightgreen'
+      })
+      boxes.forEach(box=>{
+        box.style.cursor = 'not-allowed'
+      })
+    }
+
+    function reset() {
+      winBoxesIds = [];
+      areas.forEach((val, index)=>{
+        areas[index] = null;
+      })
+      boxes.forEach(box=>{
+        box.innerHTML = '';
+        box.style.background = '';
+        box.style.cursor = 'pointer'
+      })
+      headerText.innerHTML = "Let's play..";
+      headerText.style.background = "";
+      currentPlayer = o_text;
+    }
+  </script>
+</body>
+
+</html>
